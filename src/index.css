@@ -1,4 +1,12 @@
 @import "tailwindcss";
+@theme {
+  
+  --color-millionaire-dark: "#001F54";
+  --color-millionaire-mid: "#003D9A";
+  --color-millionaire-light: "#0052CC";
+  --color-millionaire-gold: "#FFD700";
+
+}
 html{
   scroll-behavior: smooth;
   font-size: clamp(15px, 1vw + 3px, 50px);
