@@ -1,3 +1,6 @@
+"use client";
+import { motion } from "framer-motion";
+
 export default function PrizeLadder({
   prizes,
   currentIndex,
@@ -5,29 +8,53 @@ export default function PrizeLadder({
   prizes: number[];
   currentIndex: number;
 }) {
-
   return (
-    <div className="fixed start-2 h-[96vh] top-1 rounded-3xl p-2 w-64 shadow-2xl border-2 border-yellow-500 flex flex-col">
+    <div className="fixed md:start-2 start-1 top-1 lg:w-64 md:w-44 w-16 h-[96vh]  md:rounded-3xl rounded-2xl p-0.5 md:p-3 shadow-[0_0_25px_rgba(255,215,0,0.3)]  border-yellow-500 flex flex-col">
       <ul className="flex flex-col-reverse flex-1 gap-2">
         {prizes.map((prize, index) => {
           const isCurrent = index === currentIndex;
 
-          // ألوان السؤال الحالي
-          const bgClass = isCurrent
-            ? "bg-yellow-500 text-black shadow shadow-yellow-400/60 scale-105"
-            : "bg-gradient-to-r from-gray-700 via-gray-800 to-gray-700 text-white";
-
-          const textClass = isCurrent ? "font-extrabold text-lg" : "text-base font-semibold";
-
           return (
-            <li
+            <motion.li
               key={index}
-              className={`flex  px-2 justify-between items-center rounded-xl transition-all duration-300 ${bgClass} ${textClass}`}
-              style={{ flex: 1 }} // تقسيم المساحة بالتساوي بين جميع العناصر
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`flex justify-center lg:justify-between items-center px-1 md:px-2 rounded-xl transition-all duration-300 border border-transparent ${
+                isCurrent
+                  ? "bg-yellow-500 text-black shadow-lg shadow-yellow-400/70 scale-105 border-yellow-300"
+                  : "bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-gray-200 hover:scale-[1.02] hover:border-yellow-500/40"
+              }`}
+              style={{ flex: 1 }}
             >
-              <span className="text-sm sm:text-base truncate">سؤال {index + 1}</span>
-              <span className="text-sm sm:text-base truncate">{prize}$</span>
-            </li>
+              <span
+                className={`hidden lg:inline truncate ${
+                  isCurrent
+                    ? "font-extrabold text-lg drop-shadow-[0_0_6px_rgba(0,0,0,0.4)]"
+                    : "text-sm sm:text-base font-semibold"
+                }`}
+              >
+                سؤال {index + 1}
+              </span>
+              <span
+                className={`truncate ${
+                  isCurrent
+                    ? "font-extrabold text-lg"
+                    : "text-[.65rem] md:text-base font-semibold"
+                }`}
+              >
+                {prize.toLocaleString()}
+              </span>
+
+              {isCurrent && (
+                <motion.div
+                  className="absolute inset-0 rounded-xl bg-yellow-400/20 blur-md"
+                  animate={{ opacity: [0.3, 0.7, 0.3] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+              )}
+            </motion.li>
           );
         })}
       </ul>

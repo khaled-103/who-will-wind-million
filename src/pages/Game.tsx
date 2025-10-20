@@ -199,7 +199,7 @@ export default function Game() {
       <PrizeLadder prizes={prizes} currentIndex={currentQuestionIndex} />
 
       {/* القسم الرئيسي */}
-      <div className="flex flex-col flex-1 items-center justify-center gap-6 px-4 md:ms-64">
+      <div className="flex flex-col flex-1 items-center justify-center gap-6 px-4 md:ms-64 ms-16">
         <Lifelines lifelines={lifelines} onUse={handleUseLifline} />
 
         <Timer
@@ -208,7 +208,7 @@ export default function Game() {
           duration={30}
           onTimeOut={() => {
             // playSound("timeout");
-            handleAnswer(null);
+            // handleAnswer(null);
           }}
         />
 
