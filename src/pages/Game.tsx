@@ -7,7 +7,8 @@ import Timer from "../components/game/Timer";
 import { getRandomFromArray } from "../lib/helper";
 import type { Answer, Lifelines as LifelinesType } from "../types";
 import { LifelinesEnum } from "../lib/constant";
-const gameQuestions = getRandomFromArray(questionsData,15);
+import { AnimatePresence, motion } from "framer-motion";
+const gameQuestions = getRandomFromArray(questionsData, 15);
 const prizes: number[] = [
   100,      // سؤال 1
   200,      // سؤال 2
@@ -26,50 +27,58 @@ const prizes: number[] = [
   1000000   // سؤال 15
 ];
 
+const handleFullScreen = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+};
+
 
 export default function Game() {
   console.log("game re render");
-  
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null);
   const [isCurrentQuestionAnswered, setIsCurrentQuestionAnswered] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [isWin, setIsWin] = useState(false);
   const [lifelines, setLifelines] = useState<LifelinesType>({
-    fiftyFifty: {used:false,by:null},
-    audience: {used:false,by:null},
-    phone: {used:false,by:null},
+    fiftyFifty: { used: false, by: null },
+    audience: { used: false, by: null },
+    phone: { used: false, by: null },
   });
 
   const currentQuestion = gameQuestions[currentQuestionIndex];
-  const handleUseLifline = (type:string) => {
+  const handleUseLifline = (type: string) => {
     setTimeout(() => {
       if (type === LifelinesEnum.fiftyFifty) {
-      // منطق 50/50
-      const incorrectAnswers = currentQuestion.options.filter(answer => answer.id !== currentQuestion.correctId);
-      setLifelines(prev => {
-        return {
-          ...prev,
-          "fiftyFifty": {used:true, by:currentQuestion.id, discardedAnswers:incorrectAnswers.slice(0, 2)}
-        }
-      });
-    } else if (type === LifelinesEnum.audience) {
-      // منطق مساعدة الجمهور
-      setLifelines(prev => {
-        return {
-          ...prev,
-          "audience": {used:true, by:currentQuestion.id}
-        }
-      });
-    } else if (type === LifelinesEnum.phone) {
-      // منطق مكالمة صديق
-      setLifelines(prev => {
-        return {
-          ...prev,
-          "phone": {used:true, by:currentQuestion.id}
-        }
-      });
-    }
+        // منطق 50/50
+        const incorrectAnswers = currentQuestion.options.filter(answer => answer.id !== currentQuestion.correctId);
+        setLifelines(prev => {
+          return {
+            ...prev,
+            "fiftyFifty": { used: true, by: currentQuestion.id, discardedAnswers: incorrectAnswers.slice(0, 2) }
+          }
+        });
+      } else if (type === LifelinesEnum.audience) {
+        // منطق مساعدة الجمهور
+        setLifelines(prev => {
+          return {
+            ...prev,
+            "audience": { used: true, by: currentQuestion.id }
+          }
+        });
+      } else if (type === LifelinesEnum.phone) {
+        // منطق مكالمة صديق
+        setLifelines(prev => {
+          return {
+            ...prev,
+            "phone": { used: true, by: currentQuestion.id }
+          }
+        });
+      }
     }, 1000);
   };
 
@@ -95,42 +104,135 @@ export default function Game() {
       }, 2000);
     }
   };
-  
 
+
+  // const audioRefs = useRef({});
+
+  // // دالة لتشغيل صوت معين
+  // const playSound = (name) => {
+  //   const sound = audioRefs.current[name];
+  //   if (sound) {
+  //     sound.currentTime = 0;
+  //     sound.play();
+  //   }
+  // };
+
+  // // تحميل الأصوات مرة واحدة
+  // useEffect(() => {
+  //   const names = ["start", "correct", "wrong", "timeout", "win", "lose", "select"];
+  //   names.forEach((name) => {
+  //     const audio = new Audio(`/sounds/${name}.mp3`);
+  //     audioRefs.current[name] = audio;
+  //   });
+  //   playSound("start");
+  // }, []);
+
+
+  // وضع ملء الشاشة
+
+
+
+  // حالات النهاية
   if (gameOver) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen  text-center text-white">
+      <div className="flex flex-col items-center justify-center h-screen text-center bg-gradient-to-b from-black to-blue-950 text-white px-4">
         <h1 className="text-4xl font-bold mb-4 animate-pulse text-yellow-400">انتهت اللعبة!</h1>
-        {currentQuestionIndex > 0 ?
-        <p className="text-2xl">لقد فزت بمبلغ: <span className="text-green-400">{prizes[currentQuestionIndex - 1]}₪</span></p> : <p>للاسف لم تحصل على شي</p> }
+        {currentQuestionIndex > 0 ? (
+          <p className="text-2xl">
+            لقد فزت بمبلغ:
+            <span className="text-green-400 font-bold ms-2">
+              {prizes[currentQuestionIndex - 1]}₪
+            </span>
+          </p>
+        ) : (
+          <p className="text-red-400 text-xl">للأسف لم تحصل على شيء</p>
+        )}
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-6 cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded-xl font-semibold shadow-lg transition"
+        >
+          إعادة المحاولة
+        </button>
       </div>
     );
   }
 
   if (isWin) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen  text-center text-white">
-        <h1 className="text-4xl font-bold mb-4 animate-pulse text-yellow-400">مبروك لقد حصلت على المليون!</h1>
-        <p className="text-2xl">لقد فزت بمبلغ: <span className="text-green-400">{prizes[gameQuestions.length - 1]}₪</span></p>
+      <div className="flex flex-col items-center justify-center h-screen text-center bg-gradient-to-b from-black to-blue-950 text-white px-4">
+        <motion.h1
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 100 }}
+          className="text-4xl font-bold mb-4 text-yellow-400"
+        >
+          مبروك! لقد حصلت على المليون!
+        </motion.h1>
+        <p className="text-2xl">
+          لقد فزت بمبلغ:
+          <span className="text-green-400 font-bold ms-2">
+            {prizes[gameQuestions.length - 1]}₪
+          </span>
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="mt-6 cursor-pointer bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-xl font-semibold shadow-lg transition"
+        >
+          العب مرة أخرى
+        </button>
       </div>
     );
   }
 
+  // الواجهة الأساسية أثناء اللعب
   return (
-    <div >
+    <div className="relative min-h-screen flex flex-col md:flex-row bg-gradient-to-b from-black via-blue-950 to-black text-white font-[Cairo] overflow-hidden">
+      {/* زر ملء الشاشة */}
+      <button
+        onClick={handleFullScreen}
+        className="absolute cursor-pointer top-4 end-4 text-sm bg-yellow-500 hover:bg-yellow-600 text-black px-3 py-1 rounded-lg shadow-md transition"
+      >
+        ملء الشاشة
+      </button>
+
       {/* شريط الجوائز */}
       <PrizeLadder prizes={prizes} currentIndex={currentQuestionIndex} />
-      {/* القسم الرئيسي: السؤال والمساعدات */}
-      <div className="ms-64 flex flex-col gap-4 items-center">
+
+      {/* القسم الرئيسي */}
+      <div className="flex flex-col flex-1 items-center justify-center gap-6 px-4 md:ms-64">
         <Lifelines lifelines={lifelines} onUse={handleUseLifline} />
-        <Timer isPaused={isCurrentQuestionAnswered} key={currentQuestion.id} duration={30} onTimeOut={() => handleAnswer(null)} />
-        <QuestionCard
-          question={currentQuestion}
-          selectedAnswer={selectedAnswer}
-          isCurrentQuestionAnswered={isCurrentQuestionAnswered}
-          onSelectAnswer={handleAnswer}
-          lifelines={lifelines}
+
+        <Timer
+          isPaused={isCurrentQuestionAnswered}
+          key={currentQuestion.id}
+          duration={30}
+          onTimeOut={() => {
+            // playSound("timeout");
+            handleAnswer(null);
+          }}
         />
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentQuestion.id}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -40 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-3xl"
+          >
+            <QuestionCard
+              question={currentQuestion}
+              selectedAnswer={selectedAnswer}
+              isCurrentQuestionAnswered={isCurrentQuestionAnswered}
+              onSelectAnswer={(answer) => {
+                // playSound("select");
+                handleAnswer(answer);
+              }}
+              lifelines={lifelines}
+            />
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
