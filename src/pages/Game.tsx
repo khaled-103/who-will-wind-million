@@ -186,7 +186,7 @@ export default function Game() {
 
   // الواجهة الأساسية أثناء اللعب
   return (
-    <div className="relative min-h-screen flex flex-col md:flex-row bg-gradient-to-b from-black via-blue-950 to-black text-white font-[Cairo] overflow-hidden">
+    <div className="relative min-h-screen flex flex-col md:flex-row font-[Cairo] overflow-hidden">
       {/* زر ملء الشاشة */}
       <button
         onClick={handleFullScreen}
@@ -208,7 +208,7 @@ export default function Game() {
           duration={30}
           onTimeOut={() => {
             // playSound("timeout");
-            // handleAnswer(null);
+            handleAnswer(null);
           }}
         />
 
