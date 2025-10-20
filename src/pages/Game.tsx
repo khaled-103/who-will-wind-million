@@ -5,7 +5,8 @@ import Lifelines from "../components/game/Lifelines";
 import questionsData from "../data/questions.json";
 import Timer from "../components/game/Timer";
 import { getRandomFromArray } from "../lib/helper";
-import type { Answer } from "../types";
+import type { Answer, Lifelines as LifelinesType } from "../types";
+import { LifelinesEnum } from "../lib/constant";
 const gameQuestions = getRandomFromArray(questionsData,15);
 const prizes: number[] = [
   100,      // سؤال 1
@@ -27,18 +28,51 @@ const prizes: number[] = [
 
 
 export default function Game() {
+  console.log("game re render");
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null);
   const [isCurrentQuestionAnswered, setIsCurrentQuestionAnswered] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [isWin, setIsWin] = useState(false);
-  const [lifelines, setLifelines] = useState({
-    fiftyFifty: true,
-    audience: true,
-    phone: true,
+  const [lifelines, setLifelines] = useState<LifelinesType>({
+    fiftyFifty: {used:false,by:null},
+    audience: {used:false,by:null},
+    phone: {used:false,by:null},
   });
 
   const currentQuestion = gameQuestions[currentQuestionIndex];
+  const handleUseLifline = (type:string) => {
+    setTimeout(() => {
+      if (type === LifelinesEnum.fiftyFifty) {
+      // منطق 50/50
+      const incorrectAnswers = currentQuestion.options.filter(answer => answer.id !== currentQuestion.correctId);
+      setLifelines(prev => {
+        return {
+          ...prev,
+          "fiftyFifty": {used:true, by:currentQuestion.id, discardedAnswers:incorrectAnswers.slice(0, 2)}
+        }
+      });
+    } else if (type === LifelinesEnum.audience) {
+      // منطق مساعدة الجمهور
+      setLifelines(prev => {
+        return {
+          ...prev,
+          "audience": {used:true, by:currentQuestion.id}
+        }
+      });
+    } else if (type === LifelinesEnum.phone) {
+      // منطق مكالمة صديق
+      setLifelines(prev => {
+        return {
+          ...prev,
+          "phone": {used:true, by:currentQuestion.id}
+        }
+      });
+    }
+    }, 1000);
+  };
+
   const handleAnswer = (answer: Answer | null) => {
     if (isCurrentQuestionAnswered) return;
     setSelectedAnswer(answer);
@@ -61,6 +95,7 @@ export default function Game() {
       }, 2000);
     }
   };
+  
 
   if (gameOver) {
     return (
@@ -83,18 +118,18 @@ export default function Game() {
 
   return (
     <div >
-
       {/* شريط الجوائز */}
       <PrizeLadder prizes={prizes} currentIndex={currentQuestionIndex} />
       {/* القسم الرئيسي: السؤال والمساعدات */}
       <div className="ms-64 flex flex-col gap-4 items-center">
-        <Lifelines lifelines={lifelines} setLifelines={setLifelines} />
+        <Lifelines lifelines={lifelines} onUse={handleUseLifline} />
         <Timer isPaused={isCurrentQuestionAnswered} key={currentQuestion.id} duration={30} onTimeOut={() => handleAnswer(null)} />
         <QuestionCard
           question={currentQuestion}
           selectedAnswer={selectedAnswer}
           isCurrentQuestionAnswered={isCurrentQuestionAnswered}
           onSelectAnswer={handleAnswer}
+          lifelines={lifelines}
         />
       </div>
     </div>

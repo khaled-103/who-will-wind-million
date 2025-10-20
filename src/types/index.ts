@@ -10,7 +10,9 @@ export interface Question {
 }
 
 export interface Lifelines {
-    fiftyFifty: boolean;
-    audience: boolean;
-    phone: boolean;
+    fiftyFifty: {used:boolean,by:string|null,discardedAnswers?: Answer[]};
+    audience: {used:boolean,by:string|null};
+    phone: {used:boolean,by:string|null};
 }
+export type AudienceHelpChartOption = { id: string; text: string; percent: number }[];
+

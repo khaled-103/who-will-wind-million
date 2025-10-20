@@ -10,7 +10,7 @@ type CircularTimerProps = {
 
 export default function CircularTimer({
   duration,
-  size = 120,
+  size = 60,
   strokeWidth = 6,
   onTimeOut,
   isPaused = false,
