@@ -1,4 +1,5 @@
-import type React from "react";
+
+import { motion } from "framer-motion";
 import type { Answer, AudienceHelpChartOption, Lifelines, Question } from "../../types";
 import AudienceHelpChart from "./AudienceHelpChart";
 
@@ -7,71 +8,83 @@ export default function QuestionCard({
   selectedAnswer,
   isCurrentQuestionAnswered,
   onSelectAnswer,
-  lifelines
+  lifelines,
 }: {
   question: Question;
   selectedAnswer: Answer | null;
   isCurrentQuestionAnswered: boolean;
   onSelectAnswer: (answer: Answer) => void;
-  lifelines: Lifelines
+  lifelines: Lifelines;
 }) {
-  const arabicLabels = ["أ", "ب", "ج", "د"];
 
   let questionText: React.ReactNode = question.text;
   if (lifelines.phone.used && question.id === lifelines.phone.by)
-    questionText = "مكالمة صديق يوصي باختيار الإجابة الصحيحة!" + question.options.find(ans => ans.id === question.correctId)?.text;
+    questionText = (
+      <p className="text-center text-yellow-400 font-bold animate-pulse">
+        📞 صديقك يوصي بالإجابة:{" "}
+        <span className="text-green-400 font-extrabold">
+          {question.options.find((ans) => ans.id === question.correctId)?.text}
+        </span>
+      </p>
+    );
   else if (lifelines.audience.used && question.id === lifelines.audience.by) {
     const options: AudienceHelpChartOption = [];
     const correctPercent = Math.floor(Math.random() * 15) + 60;
     let remainingPercent = 100 - correctPercent;
-    console.log(correctPercent, remainingPercent);
 
-    question.options.forEach((option,index) => {
+    question.options.forEach((option, index) => {
       if (option.id === question.correctId) {
         options.push({ id: option.id, text: option.text, percent: correctPercent });
       } else {
         let optoinPercent = Math.floor(Math.random() * remainingPercent);
         remainingPercent -= optoinPercent;
-        if(index === question.options.length -1)
-          optoinPercent += remainingPercent;
+        if (index === question.options.length - 1) optoinPercent += remainingPercent;
         options.push({ id: option.id, text: option.text, percent: optoinPercent });
-
       }
     });
+
     questionText = <AudienceHelpChart options={options} />;
   }
 
   return (
-    <div className="w-full max-w-5xl mx-autorounded-3xl transition-all duration-500">
+    <div
+      className="w-full max-w-5xl mx-auto rounded-3xl transition-all duration-500"
+    >
       {/* السؤال */}
-      <h2 className="text-center mx-auto text-lg md:text-3xl  font-extrabold mb-4 sm:mb-6 leading-relaxed tracking-wide bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500 bg-clip-text text-transparent">
+      <motion.h2
+        className="text-center mx-auto text-lg md:text-3xl font-extrabold mb-6 leading-relaxed tracking-wide
+        bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(255,255,255,0.2)]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
         {questionText}
-      </h2>
+      </motion.h2>
 
       {/* الخيارات */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4">
         {question.options.map((opt, index) => {
-          const isDiscarded = lifelines.fiftyFifty.used && question.id === lifelines.fiftyFifty.by && lifelines.fiftyFifty.discardedAnswers?.some(ans => ans.id === opt.id);
+          const isDiscarded =
+            lifelines.fiftyFifty.used &&
+            question.id === lifelines.fiftyFifty.by &&
+            lifelines.fiftyFifty.discardedAnswers?.some((ans) => ans.id === opt.id);
           const isCorrect = opt.id === question.correctId;
           const isSelected = opt.id === selectedAnswer?.id;
 
-          // الألوان الأساسية والـ hover
-          const baseClasses =
-            "relative p-5 rounded-3xl text-lg font-semibold flex items-center justify-between text-right min-h-[70px] sm:min-h-[90px] transition-transform duration-300 transform focus:outline-none focus:ring-4 focus:ring-yellow-400 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 shadow-lg";
-          let bgClasses =
-            "bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 border border-yellow-400 text-white shadow-[0_8px_15px_rgba(0,0,0,0.3)]";
-          let hoverClasses =
-            "hover:scale-101  hover:bg-gradient-to-br hover:from-yellow-600 hover:via-yellow-500 hover:to-yellow-600";
-
+          const base =
+            "relative group overflow-hidden rounded-full border-2 text-lg sm:text-xl font-bold tracking-wide flex items-center justify-center h-[70px] sm:h-[90px] transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.1)]";
+          let style =
+            "bg-gradient-to-b from-[#1b2735] to-[#090a0f] border-yellow-500 text-yellow-100 hover:shadow-[0_0_20px_rgba(255,215,0,0.3)] hover:scale-[1.02]";
           if (isCurrentQuestionAnswered) {
             if (isCorrect) {
-              bgClasses =
-                "bg-gradient-to-r from-green-500 via-green-600 to-green-500 border-green-400 text-white shadow-[0_0_25px_rgba(0,255,0,0.7)] scale-105";
-              hoverClasses = "";
+              style =
+                "bg-gradient-to-b from-green-600 to-green-800 text-white border-green-400 shadow-[0_0_25px_rgba(0,255,0,0.5)] scale-105";
             } else if (isSelected) {
-              bgClasses =
-                "bg-gradient-to-r from-red-500 via-red-600 to-red-500 border-red-400 text-white shadow-[0_0_25px_rgba(255,0,0,0.7)] scale-105";
-              hoverClasses = "";
+              style =
+                "bg-gradient-to-b from-red-700 to-red-900 text-white border-red-400 shadow-[0_0_25px_rgba(255,0,0,0.5)] scale-105";
+            } else {
+              style =
+                "bg-gradient-to-b from-gray-800 to-gray-900 text-gray-400 border-gray-600 opacity-70";
             }
           }
 
@@ -79,37 +92,29 @@ export default function QuestionCard({
             <button
               key={opt.id}
               onClick={() => onSelectAnswer(opt)}
-              className={`${baseClasses} ${bgClasses} ${!(isCurrentQuestionAnswered || isDiscarded) ? hoverClasses : ""}`}
               disabled={isCurrentQuestionAnswered || isDiscarded}
+              className={`${base} ${style}`}
             >
+              {/* تأثير الإضاءة */}
+              <span className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-[radial-gradient(circle_at_center,rgba(255,255,0,0.5)_0%,transparent_70%)]"></span>
+
+              {/* حافة مضيئة متحركة */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-yellow-300/10 to-transparent animate-[shine_2s_linear_infinite]"></span>
+
               {/* الحرف العربي */}
-              <span className="absolute right-4 text-yellow-400 text-xl font-bold">
-                {arabicLabels[index]}.
+              <span className="absolute right-6 text-yellow-400 font-extrabold text-2xl">
+                {["أ", "ب", "ج", "د"][index]}.
               </span>
 
               {/* نص الخيار */}
-              {!isDiscarded && <span className="mr-12 text-base sm:text-lg truncate">{opt.text}</span>}
-
-              {/* علامة الصح والخطأ */}
-              {isCurrentQuestionAnswered && isCorrect && (
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-green-300 text-2xl sm:text-3xl animate-pulse drop-shadow-lg">
-                  ✔
-                </span>
-              )}
-              {isCurrentQuestionAnswered && isSelected && !isCorrect && (
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-red-300 text-2xl sm:text-3xl animate-pulse drop-shadow-lg">
-                  ✘
-                </span>
-              )}
-
-              {/* shine effect */}
-              {!isCurrentQuestionAnswered && (
-                <span className="absolute inset-0 rounded-3xl bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 opacity-0 group-hover:opacity-20 transition-opacity"></span>
+              {!isDiscarded && (
+                <span className="z-10 px-10 text-center truncate">{opt.text}</span>
               )}
             </button>
           );
         })}
       </div>
+
     </div>
   );
 }
