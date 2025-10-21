@@ -5,13 +5,16 @@ import GameRules from "../components/home/GameRules";
 import Header from "../components/home/Header";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { handleFullScreen } from "../lib/helper";
+import { useSoundContext } from "../contexts/SoundContext";
 
 export default function Home() {
   const navigate = useNavigate();
-
+  const {playSound} = useSoundContext();
   function handleStartGame() {
     handleFullScreen();
     navigate("/new-game");
+    playSound("bg");
+    playSound("click");
   }
 
   return (
