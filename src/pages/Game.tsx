@@ -4,7 +4,7 @@ import PrizeLadder from "../components/game/PrizeLadder";
 import Lifelines from "../components/game/Lifelines";
 import questionsData from "../data/questions.json";
 import Timer from "../components/game/Timer";
-import { getRandomFromArray } from "../lib/helper";
+import { getRandomFromArray, handleFullScreen } from "../lib/helper";
 import type { Answer, Lifelines as LifelinesType } from "../types";
 import { LifelinesEnum } from "../lib/constant";
 import { AnimatePresence, motion } from "framer-motion";
@@ -26,14 +26,6 @@ const prizes: number[] = [
   500000,   // سؤال 14
   1000000   // سؤال 15
 ];
-
-const handleFullScreen = () => {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else {
-    document.exitFullscreen();
-  }
-};
 
 
 export default function Game() {
@@ -133,13 +125,9 @@ export default function Game() {
 
 
   // حالات النهاية
-
   if (gameOver) {
     return (
       <div className="relative flex flex-col gap-4 items-center justify-center h-screen text-center overflow-hidden">
-        
-
-
         {/* النص الرئيسي */}
         <motion.h1
           initial={{ scale: 0.9, opacity: 0 }}
@@ -175,9 +163,6 @@ export default function Game() {
           </motion.p>
         )}
 
-       
-       
-
         {/* زر إعادة المحاولة */}
         <motion.button
           initial={{ opacity: 0, y: 40 }}
@@ -188,14 +173,6 @@ export default function Game() {
         >
           🔁 إعادة المحاولة
         </motion.button>
-
-        {/* تأثير اهتزاز بسيط عند الخسارة */}
-        <motion.div
-          initial={{ x: 0 }}
-          animate={{ x: [-4, 4, -4, 4, 0] }}
-          transition={{ delay: 0.4, duration: 0.4 }}
-          className="absolute inset-0 -z-10"
-        ></motion.div>
       </div>
     );
   }
@@ -238,10 +215,13 @@ export default function Game() {
     );
   }
 
-
   // الواجهة الأساسية أثناء اللعب
   return (
-    <div className="relative mb-8 min-h-screen flex flex-col md:flex-row font-[Cairo] overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1}}
+      transition={{ delay: .3,duration:.5,ease:"easeInOut" }}
+      className="relative mb-8 min-h-screen flex flex-col md:flex-row font-[Cairo] overflow-hidden">
       {/* زر ملء الشاشة */}
       <button
         onClick={handleFullScreen}
@@ -289,6 +269,6 @@ export default function Game() {
           </motion.div>
         </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }

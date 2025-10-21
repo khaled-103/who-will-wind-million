@@ -71,8 +71,6 @@ export default function QuestionCard({
           const isCorrect = opt.id === question.correctId;
           const isSelected = opt.id === selectedAnswer?.id;
 
-          const base =
-            "relative group overflow-hidden rounded-full border-2 text-lg sm:text-xl font-bold tracking-wide flex items-center justify-center h-[70px] sm:h-[90px] transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.1)]";
           let style =
             "bg-gradient-to-b from-[#1b2735] to-[#090a0f] border-yellow-500 text-yellow-100 hover:shadow-[0_0_20px_rgba(255,215,0,0.3)] hover:scale-[1.02]";
           if (isCurrentQuestionAnswered) {
@@ -93,7 +91,10 @@ export default function QuestionCard({
               key={opt.id}
               onClick={() => onSelectAnswer(opt)}
               disabled={isCurrentQuestionAnswered || isDiscarded}
-              className={`${base} ${style}`}
+              className={`
+            relative cursor-pointer group overflow-hidden rounded-full border-2 text-lg sm:text-xl font-bold tracking-wide flex items-center justify-center h-[70px] sm:h-[90px] transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.1)]
+                
+                ${style}`}
             >
               {/* تأثير الإضاءة */}
               <span className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500 bg-[radial-gradient(circle_at_center,rgba(255,255,0,0.5)_0%,transparent_70%)]"></span>
