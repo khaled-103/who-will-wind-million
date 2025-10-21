@@ -133,56 +133,111 @@ export default function Game() {
 
 
   // حالات النهاية
+
   if (gameOver) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen text-center bg-gradient-to-b from-black to-blue-950 text-white px-4">
-        <h1 className="text-4xl font-bold mb-4 animate-pulse text-yellow-400">انتهت اللعبة!</h1>
-        {currentQuestionIndex > 0 ? (
-          <p className="text-2xl">
-            لقد فزت بمبلغ:
-            <span className="text-green-400 font-bold ms-2">
-              {prizes[currentQuestionIndex - 1]}₪
-            </span>
-          </p>
-        ) : (
-          <p className="text-red-400 text-xl">للأسف لم تحصل على شيء</p>
-        )}
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-6 cursor-pointer bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-2 rounded-xl font-semibold shadow-lg transition"
+      <div className="relative flex flex-col gap-4 items-center justify-center h-screen text-center overflow-hidden">
+        
+
+
+        {/* النص الرئيسي */}
+        <motion.h1
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", damping: 8, stiffness: 100 }}
+          className="text-5xl sm:text-6xl font-extrabold  text-red-500 drop-shadow-[0_0_30px_rgba(255,0,0,0.4)]"
         >
-          إعادة المحاولة
-        </button>
+          انتهت اللعبة
+        </motion.h1>
+
+        {/* نص النتيجة */}
+        {currentQuestionIndex > 0 ? (
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="text-2xl sm:text-3xl font-medium text-gray-200"
+          >
+            لقد فزت بمبلغ
+            <span className="text-yellow-400 font-bold mx-2 drop-shadow-[0_0_10px_rgba(255,255,0,0.6)]">
+              {prizes[currentQuestionIndex - 1]}$
+            </span>
+            👏
+          </motion.p>
+        ) : (
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="text-xl sm:text-2xl text-red-400"
+          >
+            للأسف 😞 لم تحصل على شيء
+          </motion.p>
+        )}
+
+       
+       
+
+        {/* زر إعادة المحاولة */}
+        <motion.button
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+          onClick={() => window.location.reload()}
+          className="relative cursor-pointer bg-gradient-to-r from-yellow-500 via-yellow-400 to-yellow-500 text-black px-8 py-3 rounded-full font-semibold text-lg shadow-[0_0_20px_rgba(255,215,0,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(255,215,0,0.6)]"
+        >
+          🔁 إعادة المحاولة
+        </motion.button>
+
+        {/* تأثير اهتزاز بسيط عند الخسارة */}
+        <motion.div
+          initial={{ x: 0 }}
+          animate={{ x: [-4, 4, -4, 4, 0] }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+          className="absolute inset-0 -z-10"
+        ></motion.div>
       </div>
     );
   }
 
+
   if (isWin) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen text-center bg-gradient-to-b from-black to-blue-950 text-white px-4">
+      <div className="relative flex flex-col items-center justify-center h-screen text-center bg-gradient-to-b from-[#000000] to-[#001b3f] text-white overflow-hidden">
         <motion.h1
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", stiffness: 100 }}
-          className="text-4xl font-bold mb-4 text-yellow-400"
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 100, damping: 10 }}
+          className="text-5xl font-extrabold mb-4 text-yellow-400 drop-shadow-[0_0_25px_rgba(255,255,0,0.8)]"
         >
-          مبروك! لقد حصلت على المليون!
+          🏆 مبروك! لقد حصلت على المليون!
         </motion.h1>
-        <p className="text-2xl">
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="text-2xl"
+        >
           لقد فزت بمبلغ:
-          <span className="text-green-400 font-bold ms-2">
+          <span className="text-green-400 font-bold ms-2 drop-shadow-[0_0_10px_rgba(0,255,0,0.7)]">
             {prizes[gameQuestions.length - 1]}₪
           </span>
-        </p>
-        <button
+        </motion.p>
+
+        <motion.button
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1 }}
           onClick={() => window.location.reload()}
-          className="mt-6 cursor-pointer bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-xl font-semibold shadow-lg transition"
+          className="mt-10 cursor-pointer bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white px-8 py-3 rounded-full font-semibold text-lg shadow-[0_0_25px_rgba(0,255,0,0.5)] transition-all hover:scale-110"
         >
-          العب مرة أخرى
-        </button>
+          🎮 العب مرة أخرى
+        </motion.button>
       </div>
     );
   }
+
 
   // الواجهة الأساسية أثناء اللعب
   return (
