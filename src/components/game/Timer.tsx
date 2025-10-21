@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 type CircularTimerProps = {
-  duration: number; // بالثواني
-  size?: number; // قطر الدائرة بالبيكسل
+  duration: number;
+  size?: number;
   strokeWidth?: number;
   onTimeOut: () => void;
   isPaused?: boolean;
@@ -10,8 +11,8 @@ type CircularTimerProps = {
 
 export default function CircularTimer({
   duration,
-  size = 60,
-  strokeWidth = 6,
+  size = 90,
+  strokeWidth = 8,
   onTimeOut,
   isPaused = false,
 }: CircularTimerProps) {
@@ -32,39 +33,61 @@ export default function CircularTimer({
     return () => clearTimeout(timer);
   }, [timeLeft, isPaused, onTimeOut]);
 
+  // 🎨 ألوان أكثر تدرجًا واحترافية مع روح اللعبة الأصلية
+  const getColor = () => {
+    const ratio = timeLeft / duration;
+    if (ratio > 0.5) return "#3B82F6"; // أزرق هادئ
+    if (ratio > 0.25) return "#FACC15"; // أصفر ذهبي
+    return "#EF4444"; // أحمر تحذيري
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="relative flex items-center justify-center">
+      {/* الدائرة */}
       <svg width={size} height={size} className="transform -rotate-90">
+        {/* خلفية رمادية شفافة */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="#444"
+          stroke="rgba(255,255,255,0.1)"
           strokeWidth={strokeWidth}
           fill="none"
         />
-        <circle
+        {/* الدائرة المتحركة */}
+        <motion.circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="url(#gradient)"
+          stroke={getColor()}
           strokeWidth={strokeWidth}
           fill="none"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="transition-all duration-1000"
+          animate={{ strokeDashoffset: offset }}
+          transition={{ duration: 1, ease: "linear" }}
         />
-        <defs>
-          <linearGradient id="gradient" x1="1" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#facc15" />
-            <stop offset="100%" stopColor="#f87171" />
-          </linearGradient>
-        </defs>
       </svg>
-      <span className="absolute text-yellow-400 font-bold text-lg sm:text-xl mt-1">
-        {timeLeft}s
-      </span>
+
+      {/* النص في المنتصف */}
+      <motion.span
+        className="absolute font-extrabold tracking-wide"
+        style={{
+          color:
+            timeLeft <= 5
+              ? "#EF4444" // أحمر تحذيري
+              : timeLeft <= 10
+              ? "#FACC15" // ذهبي
+              : "#FFFFFF", // أبيض في البداية
+          fontSize: size / 3.2,
+          textShadow: "0 0 6px rgba(0,0,0,0.6)",
+        }}
+        animate={{ scale: timeLeft <= 5 ? 1.4 : 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        {timeLeft}
+      </motion.span>
     </div>
   );
 }

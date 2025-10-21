@@ -186,7 +186,7 @@ export default function Game() {
 
   // الواجهة الأساسية أثناء اللعب
   return (
-    <div className="relative min-h-screen flex flex-col md:flex-row font-[Cairo] overflow-hidden">
+    <div className="relative mb-8 min-h-screen flex flex-col md:flex-row font-[Cairo] overflow-hidden">
       {/* زر ملء الشاشة */}
       <button
         onClick={handleFullScreen}
