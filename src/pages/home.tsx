@@ -13,7 +13,6 @@ export default function Home() {
   function handleStartGame() {
     handleFullScreen();
     navigate("/new-game");
-    playSound("bg");
     playSound("click");
   }
 

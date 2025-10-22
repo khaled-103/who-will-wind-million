@@ -1,5 +1,3 @@
-
-
 export function getRandomFromArray<T>(arr: T[], count: number){
     const randomIndexes = new Set<number>();
     while (randomIndexes.size < count) {

@@ -4,6 +4,8 @@ import { SoundContext } from "../../contexts/SoundContext";
 import { Outlet } from "react-router";
 type SoundsMap = typeof sounds;
 export const SoundContextProvider = () => {
+  console.log("SoundContextProvider re render");
+  
   const audioRefs = useRef<Record<keyof SoundsMap, HTMLAudioElement>>({} as Record<keyof SoundsMap, HTMLAudioElement>);
   Object.keys(sounds).forEach((key) => {
     if (!audioRefs.current[key as keyof SoundsMap]) {
@@ -14,10 +16,11 @@ export const SoundContextProvider = () => {
     }
   });
 
-  const playSound = (sound: keyof SoundsMap) => {
+  const playSound = (sound: keyof SoundsMap,loop?:boolean) => {
     const audio = audioRefs.current[sound];
     if (audio) {
       audio.currentTime = 0;
+      if(loop !== undefined) audio.loop = loop;
       audio.play();
     }
   };
