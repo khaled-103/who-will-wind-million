@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
 import { LifelinesEnum } from "../../lib/constant";
-import type { Lifelines } from "../../types";
+import type { Lifelines as LifeLinesType , LifeLinesKeys } from "../../types";
 
 export default function Lifelines({
   lifelines,
   onUse,
 }: {
-  lifelines: Lifelines;
-  onUse: (type: string) => void;
+  lifelines: LifeLinesType;
+  onUse: (type: LifeLinesKeys) => void;
 }) {
   const items = [
     { type: LifelinesEnum.fiftyFifty, label: "50/50" },
@@ -18,8 +18,7 @@ export default function Lifelines({
   return (
     <div className="flex gap-4 md:gap-6 mt-6 justify-center md:justify-start flex-wrap">
       {items.map((item) => {
-        const isUsed = lifelines[item.type as keyof Lifelines].used;
-
+        const isUsed = lifelines.helpers[item.type as keyof LifeLinesType["helpers"]].used;
         return (
           <motion.button
             key={item.type}
@@ -27,7 +26,7 @@ export default function Lifelines({
             onClick={() => onUse(item.type)}
             whileHover={!isUsed ? { scale: 1.1 } : {}}
             whileTap={!isUsed ? { scale: 0.95 } : {}}
-            className={`relative cursor-pointer flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full font-bold text-base md:text-lg border-2 shadow-lg transition-colors duration-300
+            className={`relative cursor-pointer disabled:cursor-not-allowed flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full font-bold text-base md:text-lg border-2 shadow-lg transition-colors duration-300
               ${
                 isUsed
                   ? "bg-gray-500 border-gray-400 cursor-not-allowed opacity-50"

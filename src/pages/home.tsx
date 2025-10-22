@@ -12,8 +12,8 @@ export default function Home() {
   const {playSound} = useSoundContext();
   function handleStartGame() {
     handleFullScreen();
-    navigate("/new-game");
     playSound("click");
+    navigate("/new-game");
   }
 
   return (
@@ -42,7 +42,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="mt-8 text-sm text-millionaire-gold/70 text-center">
-        © {new Date().getFullYear()} — محاكاة تعليمية لأغراض التمرين
+        © {new Date().getFullYear()} — محاكاة للعبة من سيربح المليون
       </footer>
     </main>
   );
