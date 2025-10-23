@@ -32,7 +32,7 @@ export default function PrizeLadder({
                 className={`hidden lg:inline truncate ${
                   isCurrent
                     ? "font-extrabold text-lg drop-shadow-[0_0_6px_rgba(0,0,0,0.4)]"
-                    : "text-sm sm:text-base font-semibold"
+                    : "text-sm sm:text-base font-bold"
                 }`}
               >
                 سؤال {index + 1}
@@ -41,7 +41,7 @@ export default function PrizeLadder({
                 className={`truncate ${
                   isCurrent
                     ? "font-extrabold text-lg"
-                    : "text-[.65rem] md:text-base font-semibold"
+                    : "text-[.7rem] md:text-base font-semibold"
                 }`}
               >
                 {prize.toLocaleString()}

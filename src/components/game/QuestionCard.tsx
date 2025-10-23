@@ -36,7 +36,6 @@ function getQuestionText({ question, lifelines }: { question: Question; lifeline
       }
     }
   }
-
   return question.text;
 }
 
