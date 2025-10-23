@@ -68,7 +68,7 @@ export default function QuestionCard({
       >
         {/* Question */}
         <motion.h2
-          className="text-center mx-auto text-lg md:text-3xl font-extrabold mb-6 leading-relaxed tracking-wide bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(255,255,255,0.2)]"
+          className="text-center mx-auto text-lg md:text-2xl font-extrabold mb-6 leading-relaxed tracking-wide bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(255,255,255,0.2)]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
